@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "slnEDTBooking", "slnEDTBooking\slnEDTBooking.csproj", "{8D3D69CE-59DD-4009-9B33-CBA4E1FA2894}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{D0C45D39-E39A-423E-9771-4D82D068BE83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D3D69CE-59DD-4009-9B33-CBA4E1FA2894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D3D69CE-59DD-4009-9B33-CBA4E1FA2894}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D3D69CE-59DD-4009-9B33-CBA4E1FA2894}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D3D69CE-59DD-4009-9B33-CBA4E1FA2894}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0C45D39-E39A-423E-9771-4D82D068BE83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0C45D39-E39A-423E-9771-4D82D068BE83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0C45D39-E39A-423E-9771-4D82D068BE83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0C45D39-E39A-423E-9771-4D82D068BE83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {704C3515-BEA0-4C7C-8EBF-8AA45F4A6A6B}
+	EndGlobalSection
+EndGlobal
