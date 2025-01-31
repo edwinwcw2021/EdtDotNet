@@ -12,7 +12,7 @@ namespace DataLayer.BLL
 {
 	public class BLLUser : BaseBLL
 	{
-		public BLLUser(EdtBookingContext context, IConfiguration configuration) : base(context, configuration) { }
+		public BLLUser(EdtBookingContext context) : base(context) { }
 
 		public async Task<List<User>?> GetAllUser()
 		{

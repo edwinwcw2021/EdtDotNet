@@ -9,7 +9,7 @@ namespace DataLayer.BLL
 
 	public class BLLBorrow : BaseBLL
 	{
-		public BLLBorrow(EdtBookingContext context, IConfiguration configuration) : base(context, configuration)
+		public BLLBorrow(EdtBookingContext context) : base(context)
 		{
 		}
 				
@@ -19,8 +19,8 @@ namespace DataLayer.BLL
 			DalUsers dalUser = new DalUsers(this._context);
 			DalBookInventory dalInventory = new DalBookInventory(this._context);
 
-			int DaysOfBorrow = Common.GetNoOfBorrowDays(this._configuration);
-			int UserBorrowLimit = Common.GetBorrowLimitPerUser(this._configuration);
+			int DaysOfBorrow = Common.Instance.GetNoOfBorrowDays();
+			int UserBorrowLimit = Common.Instance.GetBorrowLimitPerUser();
 			BorrowHistory bh = new BorrowHistory();
 
 			// Check if the inventory exists.

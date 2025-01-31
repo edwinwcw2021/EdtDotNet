@@ -16,11 +16,11 @@ namespace DataLayer.DAL
 
 		public async Task<List<Book>> GetAllBooks()
 		{
-			List<Book> ret = Cache.GetCache<List<Book>>(Cache.CacheName.Books);
+			List<Book> ret = Cache.Instance.GetCache<List<Book>>(Cache.CacheName.Books);
 			if (ret == null)
 			{
 				await RefreshCache();
-				ret = Cache.GetCache<List<Book>>(Cache.CacheName.Books);
+				ret = Cache.Instance.GetCache<List<Book>>(Cache.CacheName.Books);
 			}
 			return ret;
 		}
@@ -28,7 +28,7 @@ namespace DataLayer.DAL
 #nullable disable   // Bypass unnecessary warnings.
 		public async Task<List<Book>> GetBooksByKeyWords(string keywords)
 		{
-			Common.AppLog("start searh " + keywords);
+			Common.Instance.AppLog("start searh " + keywords);
 			try
 			{				
 				var allBooks = await this.GetAllBooks();
@@ -44,7 +44,7 @@ namespace DataLayer.DAL
 			}
 			finally
 			{
-				Common.AppLog("end searh " + keywords);
+				Common.Instance.AppLog("end searh " + keywords);
 			}
 		}
 
@@ -54,12 +54,12 @@ namespace DataLayer.DAL
 			try
 			{
 				ret = await this._context.Books.ToListAsync();
-				var list = Common.CloneRecClass(ret);  // Remove dependance.
-				Cache.SetCache(Cache.CacheName.Books, ret);
+				var list = Common.Instance.CloneRecClass(ret);  // Remove dependance.
+				Cache.Instance.SetCache(Cache.CacheName.Books, ret);
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 			}
 		}
 #nullable enable

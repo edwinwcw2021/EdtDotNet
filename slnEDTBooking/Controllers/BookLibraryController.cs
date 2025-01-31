@@ -21,7 +21,7 @@ namespace slnEDTBooking.Controllers
 	[ApiController]
 	public class BookLibraryController : BaseController
 	{
-		public BookLibraryController(IConfiguration configuration, EdtBookingContext context) : base(configuration, context) { }
+		public BookLibraryController(EdtBookingContext context) : base(context) { }
 
 		[HttpGet("GetBooksByKeyWords")]
 		[ProducesResponseType(200, Type = typeof(Book))]
@@ -33,7 +33,7 @@ namespace slnEDTBooking.Controllers
 			{
 				if (keyword.Length < 3)
 				{
-					Common.ErrLog(string.Format("The minimum length for keywords is three characters. {0}", keyword));
+					Common.Instance.ErrLog(string.Format("The minimum length for keywords is three characters. {0}", keyword));
 					return Problem(
 							statusCode: 400,
 							type: "Bad Request",
@@ -43,14 +43,14 @@ namespace slnEDTBooking.Controllers
 				}
 				try
 				{
-					BLLBooks bk = new BLLBooks(this._context, this._configuration);
+					BLLBooks bk = new BLLBooks(this._context);
 					var result = await bk.GetBooksByKeyWords(keyword);
-					Common.AppLog(result.Count().ToString());
+					Common.Instance.AppLog(result.Count().ToString());
 					return Json(result);
 				}
 				catch (Exception ex)
 				{
-					Common.ErrLog(ex.ToString());
+					Common.Instance.ErrLog(ex.ToString());
 					return Problem(
 							statusCode: 500,
 							type: "Internal Server Error",
@@ -61,7 +61,7 @@ namespace slnEDTBooking.Controllers
 			}
 			else
 			{
-				Common.ErrLog(string.Format("The system does not allow null or empty keywords to be entered. {0}", keyword));
+				Common.Instance.ErrLog(string.Format("The system does not allow null or empty keywords to be entered. {0}", keyword));
 				return Problem(
 						statusCode: 400,
 						type: "Bad Request",
@@ -80,11 +80,11 @@ namespace slnEDTBooking.Controllers
 		{
 			try
 			{
-				BLLBorrow br = new BLLBorrow(this._context, this._configuration);
+				BLLBorrow br = new BLLBorrow(this._context);
 				var result = await br.BorrowBook(borrow.BookInventoryId, borrow.UserId);
 				if (result.BorrowId == -1)
 				{
-					Common.ErrLog(string.Format("Data integrity issue due to concurrent updates or dirty reads. {0}", borrow));
+					Common.Instance.ErrLog(string.Format("Data integrity issue due to concurrent updates or dirty reads. {0}", borrow));
 					return Problem(
 							statusCode: 409,
 							type: "Conflict",
@@ -94,7 +94,7 @@ namespace slnEDTBooking.Controllers
 				}
 				if (result.BorrowId == -2)
 				{
-					Common.ErrLog(string.Format("The number of books borrowed per user has reached the limit. {0}", borrow));
+					Common.Instance.ErrLog(string.Format("The number of books borrowed per user has reached the limit. {0}", borrow));
 					return Problem(
 							statusCode: 409,
 							type: "User Limit",
@@ -104,7 +104,7 @@ namespace slnEDTBooking.Controllers
 				}
 				if (result.BorrowId == -3)
 				{
-					Common.ErrLog(string.Format("Inventory Not found {0}", borrow));
+					Common.Instance.ErrLog(string.Format("Inventory Not found {0}", borrow));
 					return Problem(
 							statusCode: 404,
 							type: "Not Found",
@@ -114,7 +114,7 @@ namespace slnEDTBooking.Controllers
 				}
 				if (result.BorrowId == -4)
 				{
-					Common.ErrLog(string.Format("User Not found {0}", borrow));
+					Common.Instance.ErrLog(string.Format("User Not found {0}", borrow));
 					return Problem(
 							statusCode: 404,
 							type: "Not Found",
@@ -126,7 +126,7 @@ namespace slnEDTBooking.Controllers
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 				return Problem(
 						statusCode: 500,
 						type: "System Errors",
@@ -148,7 +148,7 @@ namespace slnEDTBooking.Controllers
 				int BookInventoryId = -1;
 				if (!int.TryParse(sBookInventoryId, out BookInventoryId))
 				{
-					Common.ErrLog(string.Format("BookInventoryId must be Integer {0}", sBookInventoryId));
+					Common.Instance.ErrLog(string.Format("BookInventoryId must be Integer {0}", sBookInventoryId));
 					return Problem(
 							statusCode: 400,
 							type: "Bad Request",
@@ -157,11 +157,11 @@ namespace slnEDTBooking.Controllers
 					);
 				}
 
-				BLLBorrow br = new BLLBorrow(this._context, this._configuration);
+				BLLBorrow br = new BLLBorrow(this._context);
 				var result = await br.BookReturn(BookInventoryId);
 				if (result.BorrowId == -3)
 				{
-					Common.ErrLog(string.Format("Inventory Not found {0}", sBookInventoryId));
+					Common.Instance.ErrLog(string.Format("Inventory Not found {0}", sBookInventoryId));
 					return Problem(
 							statusCode: 404,
 							type: "Not Found ",
@@ -171,7 +171,7 @@ namespace slnEDTBooking.Controllers
 				}
 				if (result.BorrowId == -1)
 				{
-					Common.ErrLog(string.Format("Borrow record not found—either the borrow ID is invalid or the book has already been returned. {0}", sBookInventoryId));
+					Common.Instance.ErrLog(string.Format("Borrow record not found—either the borrow ID is invalid or the book has already been returned. {0}", sBookInventoryId));
 					return Problem(
 							statusCode: 409,
 							type: "Conflic",
@@ -183,7 +183,7 @@ namespace slnEDTBooking.Controllers
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 				return Problem(
 						statusCode: 500,
 						type: "Internal Server Error",
@@ -293,13 +293,13 @@ namespace slnEDTBooking.Controllers
 		{
 			try
 			{
-				BLLUser usr = new BLLUser(this._context, this._configuration);
+				BLLUser usr = new BLLUser(this._context);
 				var ret = await usr.GetAllUser();
 				return Json(ret);
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 				return Problem(
 						statusCode: 500,
 						type: "Internal Server Error",
@@ -327,13 +327,13 @@ namespace slnEDTBooking.Controllers
 							detail: "ISBN cannot be empty."
 					);
 				}
-				BLLBorrow borrow = new BLLBorrow(this._context, this._configuration);
+				BLLBorrow borrow = new BLLBorrow(this._context);
 				var ret = await borrow.GetAvailableInventoryByISBN(isbn);
 				return Json(ret);
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 				return Problem(
 						statusCode: 500,
 						type: "Internal Server Error",
@@ -351,13 +351,13 @@ namespace slnEDTBooking.Controllers
 		{
 			try
 			{
-				BLLBorrow borrow = new BLLBorrow(this._context, this._configuration);
+				BLLBorrow borrow = new BLLBorrow(this._context);
 				var ret = await borrow.GetAllBorrowedInventory();
 				return Json(ret);
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 				return Problem(
 						statusCode: 500,
 						type: "Internal Server Error",

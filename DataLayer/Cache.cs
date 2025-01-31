@@ -1,52 +1,53 @@
 ﻿using DataLayer.DAL;
 using DataLayer.Models;
-using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Runtime.Caching;
 
 namespace DataLayer
 {
-	public static class Cache
+	public class Cache
 	{
+		private static readonly Lazy<Cache> _instance = new Lazy<Cache>(() => new Cache());
+		private readonly ObjectCache _cache;
+
 		public enum CacheName
 		{
 			Books, DaysOfBorrow, BorrowLimitPerUser, Users
 		}
-		private static MemoryCache CacheObj = new MemoryCache(new MemoryCacheOptions());
 
-#nullable disable   // Bypass unnecessary warnings.
-		public static async void InitAllData(EdtBookingContext context)
+		private Cache()
 		{
-			DalBooks book = new DalBooks(context);
-			await book.GetAllBooks();  // Initialize the data in memory to enhance the search process speed.
+			_cache = MemoryCache.Default;
 		}
 
-		public static T GetCache<T>(CacheName name)
+		public static Cache Instance => _instance.Value;
+
+		public void SetCache<T>(CacheName key, T value, TimeSpan expiration)
 		{
-			return (T)CacheObj.Get(GetEnmName(name));
+			var policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.Add(expiration) };
+			_cache.Set(GetEnmName(key), value, policy);
 		}
 
-		public static void SetCache<T>(CacheName name, T value) where T : new()
+		public void SetCache<T>(CacheName key, T value)
 		{
-			CacheObj.Set(GetEnmName(name), value, new MemoryCacheEntryOptions());
+			var policy = new CacheItemPolicy();
+			policy.Priority = CacheItemPriority.NotRemovable;
+			_cache.Set(GetEnmName(key), value, policy);
 		}
 
-		public static void SetCache(CacheName name, string value)
+		public T? GetCache<T>(CacheName key)
 		{
-			CacheObj.Set(GetEnmName(name), value, new MemoryCacheEntryOptions());
-		}
-#nullable enable
-
-		public static void ClearCache()
-		{
-			CacheObj.Clear();
+			return (_cache.Contains(GetEnmName(key))) ? (T)_cache.Get(GetEnmName(key)) : default;
 		}
 
-		private static string GetEnmName(CacheName name)
+		public void Remove(CacheName key)
+		{
+			if (_cache.Contains(GetEnmName(key)))
+			{
+				_cache.Remove(GetEnmName(key));
+			}
+		}
+
+		private string GetEnmName(CacheName name)
 		{
 			var t = Enum.GetName(typeof(CacheName), name);
 			return string.IsNullOrEmpty(t) ? "" : t.ToString();

@@ -14,7 +14,8 @@ builder.Services.AddDbContext<EdtBookingContext>(options => options.UseSqlServer
 
 var app = builder.Build();
 
-Common.CreateLogger(builder.Configuration["logPath"]);
+Common.Instance.Initialize(builder.Configuration);
+Common.Instance.CreateLogger(builder.Configuration["logPath"]);
 
 // builder.Services.AddControllersWithViews();
 
@@ -43,11 +44,10 @@ using (var scope = app.Services.CreateScope())
 {
 	var services = scope.ServiceProvider;
 	var context = services.GetRequiredService<EdtBookingContext>();
-	//Cache.InitAllData(context);	
-	BLLBooks book = new BLLBooks(context, builder.Configuration);
+	BLLBooks book = new BLLBooks(context);
 	await book.InitCache();
-	Cache.SetCache(Cache.CacheName.DaysOfBorrow, builder.Configuration["DaysOfBorrow"]);
-	Cache.SetCache(Cache.CacheName.BorrowLimitPerUser, builder.Configuration["BorrowLimitPerUser"]);
+	Cache.Instance.SetCache(Cache.CacheName.DaysOfBorrow, builder.Configuration["DaysOfBorrow"]);
+	Cache.Instance.SetCache(Cache.CacheName.BorrowLimitPerUser, builder.Configuration["BorrowLimitPerUser"]);
 }
 
 app.Run();

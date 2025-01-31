@@ -12,12 +12,10 @@ namespace DataLayer.BLL
 	public class BaseBLL
 	{
 		protected readonly EdtBookingContext _context;
-		protected IConfiguration _configuration;
 
-		public BaseBLL(EdtBookingContext context, IConfiguration configuration)
+		public BaseBLL(EdtBookingContext context)
 		{
 			this._context = context;
-			this._configuration = configuration;
 		}
 	}
 }

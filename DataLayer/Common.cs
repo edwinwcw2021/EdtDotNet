@@ -7,14 +7,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace DataLayer
 {
-	public static class Common
+	public class Common
 	{
-		private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		
-		public static void CreateLogger(string? logPath)
+		private readonly Logger logger;
+		private IConfiguration _configuration;
+		private static readonly Lazy<Common> _instance = new Lazy<Common>(() => new Common());
+		public static Common Instance => _instance.Value;
+
+		private Common() 
+		{
+			logger = NLog.LogManager.GetCurrentClassLogger();
+		}
+
+		public void Initialize(IConfiguration configuration)
+		{
+			this._configuration = configuration;
+		}
+
+		public void CreateLogger(string? logPath)
 		{
 			var config = new LoggingConfiguration();
 			var fileTarget = new FileTarget
@@ -31,24 +45,24 @@ namespace DataLayer
 			config.AddRule(NLog.LogLevel.Error, NLog.LogLevel.Fatal, fileTargetErr);
 			LogManager.Configuration = config;
 		}
-		public static void AppLog(string strMessage)
+		public void AppLog(string strMessage)
 		{
 			logger.Info(strMessage);
 		}
 
-		public static void ErrLog(string strMessage)
+		public void ErrLog(string strMessage)
 		{
 			logger.Error(strMessage);
 		}
 
-		public static string GetAppSetting(IConfiguration configuration, string name)
+		public string GetAppSetting(string name)
 		{
-			string? obj = configuration[name];
+			string? obj = this._configuration[name];
 			return (obj == null) ? string.Empty : obj.ToString();
 		}
 
 
-		public static List<T> CloneRecClass<T>(List<T> fromList)
+		public List<T> CloneRecClass<T>(List<T> fromList)
 		{
 			List<T> ret = new List<T>();
 			foreach (var r in fromList)
@@ -61,31 +75,31 @@ namespace DataLayer
 		}
 
 #nullable disable   // Bypass unnecessary warnings.
-		public static int GetNoOfBorrowDays(IConfiguration configuration)
+		public int GetNoOfBorrowDays()
 		{
-			var obj = Cache.GetCache<string?>(Cache.CacheName.DaysOfBorrow);
+			var obj = Cache.Instance.GetCache<string>(Cache.CacheName.DaysOfBorrow);
 			if (obj == null)
 			{
-				var DaysOfBorrow = GetAppSetting(configuration, "DaysOfBorrow");
-				Cache.SetCache(Cache.CacheName.DaysOfBorrow, DaysOfBorrow);
+				var DaysOfBorrow = GetAppSetting("DaysOfBorrow");
+				Cache.Instance.SetCache(Cache.CacheName.DaysOfBorrow, DaysOfBorrow);
 				return Convert.ToInt32(DaysOfBorrow);
 			}
 			return Convert.ToInt32(obj);
 		}
 
-		public static int GetBorrowLimitPerUser(IConfiguration configuration)
+		public int GetBorrowLimitPerUser()
 		{
-			var obj = Cache.GetCache<string?>(Cache.CacheName.BorrowLimitPerUser);
+			var obj = Cache.Instance.GetCache<string?>(Cache.CacheName.BorrowLimitPerUser);
 			if (obj == null)
 			{
-				var BorrowLimitPerUser = GetAppSetting(configuration, "BorrowLimitPerUser");
-				Cache.SetCache(Cache.CacheName.BorrowLimitPerUser, BorrowLimitPerUser);
+				var BorrowLimitPerUser = GetAppSetting("BorrowLimitPerUser");
+				Cache.Instance.SetCache(Cache.CacheName.BorrowLimitPerUser, BorrowLimitPerUser);
 				return Convert.ToInt32(BorrowLimitPerUser);
 			}
 			return Convert.ToInt32(obj);
 		}
 
-		public static void CopyRecClass<T, TT>(T fromClass, TT toClass)
+		public void CopyRecClass<T, TT>(T fromClass, TT toClass)
 		{
 			System.Reflection.PropertyInfo[] toClassProperties;
 			toClassProperties = toClass.GetType().GetProperties();

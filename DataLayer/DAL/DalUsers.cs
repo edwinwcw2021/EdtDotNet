@@ -16,11 +16,11 @@ namespace DataLayer.DAL
 
 		public async Task<List<User>> GetAllUser()
 		{
-			List<User> ret = Cache.GetCache<List<User>>(Cache.CacheName.Users);
+			List<User> ret = Cache.Instance.GetCache<List<User>>(Cache.CacheName.Users);
 			if (ret == null)
 			{
 				await RefreshCache();
-				ret = Cache.GetCache<List<User>>(Cache.CacheName.Users);
+				ret = Cache.Instance.GetCache<List<User>>(Cache.CacheName.Users);
 			}
 			return ret;
 		}
@@ -44,12 +44,12 @@ namespace DataLayer.DAL
 			try
 			{
 				ret = await this._context.Users.ToListAsync();
-				var list = Common.CloneRecClass(ret);  // Remove dependance.
-				Cache.SetCache(Cache.CacheName.Users, ret);
+				var list = Common.Instance.CloneRecClass(ret);  // Remove dependance.
+				Cache.Instance.SetCache(Cache.CacheName.Users, ret);
 			}
 			catch (Exception ex)
 			{
-				Common.ErrLog(ex.ToString());
+				Common.Instance.ErrLog(ex.ToString());
 			}
 		}
 	}

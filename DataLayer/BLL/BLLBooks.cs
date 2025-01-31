@@ -6,13 +6,13 @@ namespace DataLayer.BLL
 {
 	public class BLLBooks : BaseBLL
 	{ 
-		public BLLBooks(EdtBookingContext context, IConfiguration configuration) : base(context, configuration)
+		public BLLBooks(EdtBookingContext context) : base(context)
 		{
 		}
 
 		public async Task InitCache()
 		{
-			BLLUser usr = new BLLUser(this._context, this._configuration);
+			BLLUser usr = new BLLUser(this._context);
 			await usr.GetAllUser();
 
 			DalBooks dal = new DalBooks(this._context);
