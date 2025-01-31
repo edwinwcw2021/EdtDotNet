@@ -22,6 +22,9 @@ Features:
 Users can search for books on the Book page, with results returning 100,000 records in less than one second thanks to the caching technology implemented.
 Borrowed books are displayed on the Borrowed page.
 
+Date 31/01/2025
+
+I forgot to use the Singleton pattern, a more modern approach to ensuring encapsulation and single-use practice in object-oriented design. I've now added it for better code practice. Please bear with me.
 
 
 Click [here](https://edtlib.vagweb.com/) to visit the live website.
