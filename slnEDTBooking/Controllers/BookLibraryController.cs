@@ -27,20 +27,20 @@ namespace slnEDTBooking.Controllers
 		[ProducesResponseType(200, Type = typeof(Book))]
 		[ProducesResponseType(400)]
 		[ProducesResponseType(500)]
-		public async Task<IActionResult> GetBooksByKeyWords(string keyword)
+		public async Task<IActionResult> GetBooksByKeyWords(string keyword="")
 		{
-			if (!string.IsNullOrEmpty(keyword))
-			{
-				if (keyword.Length < 3)
-				{
-					Common.Instance.ErrLog(string.Format("The minimum length for keywords is three characters. {0}", keyword));
-					return Problem(
-							statusCode: 400,
-							type: "Bad Request",
-							title: "Bad Request",
-							detail: "The minimum length for keywords is three characters."
-					);
-				}
+			//if (!string.IsNullOrEmpty(keyword))
+			//{
+				//if (keyword.Length < 3)
+				//{
+				//	Common.Instance.ErrLog(string.Format("The minimum length for keywords is three characters. {0}", keyword));
+				//	return Problem(
+				//			statusCode: 400,
+				//			type: "Bad Request",
+				//			title: "Bad Request",
+				//			detail: "The minimum length for keywords is three characters."
+				//	);
+				//}
 				try
 				{
 					BLLBooks bk = new BLLBooks(this._context);
@@ -58,17 +58,17 @@ namespace slnEDTBooking.Controllers
 							detail: "System error. Please contact the IT department."
 					);
 				}
-			}
-			else
-			{
-				Common.Instance.ErrLog(string.Format("The system does not allow null or empty keywords to be entered. {0}", keyword));
-				return Problem(
-						statusCode: 400,
-						type: "Bad Request",
-						title: "Bad Request",
-						detail: "The system does not allow null or empty keywords to be entered."
-				);
-			}
+			//}
+			//else
+			//{
+			//	Common.Instance.ErrLog(string.Format("The system does not allow null or empty keywords to be entered. {0}", keyword));
+			//	return Problem(
+			//			statusCode: 400,
+			//			type: "Bad Request",
+			//			title: "Bad Request",
+			//			detail: "The system does not allow null or empty keywords to be entered."
+			//	);
+			//}
 		}
 
 		[HttpPost("BorrowAvailableBook")]
