@@ -1,0 +1,52 @@
+[
+    {
+        "code": 400,
+        "title": "Bad Request",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1"
+    },
+    {
+        "code": 401,
+        "title": "Unauthorized",
+        "type": "https://tools.ietf.org/html/rfc7235#section-3.1"
+    },
+    {
+        "code": 403,
+        "title": "Forbidden",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.4"
+    },
+    {
+        "code": 404,
+        "title": "Not Found",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.5"
+    },
+    {
+        "code": 405,
+        "title": "Method Not Allowed",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.6"
+    },
+    {
+        "code": 409,
+        "title": "Conflict",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.10"
+    },
+    {
+        "code": 415,
+        "title": "Unsupported Media Type",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.5.16"
+    },
+    {
+        "code": 429,
+        "title": "Too Many Requests",
+        "type": "https://tools.ietf.org/html/rfc6585#section-4"
+    },
+    {
+        "code": 500,
+        "title": "Internal Server Error",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.6.1"
+    },
+    {
+        "code": 503,
+        "title": "Service Unavailable",
+        "type": "https://tools.ietf.org/html/rfc9110#section-15.6.4"
+    }
+]
