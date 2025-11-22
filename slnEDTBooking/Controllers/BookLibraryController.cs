@@ -19,11 +19,11 @@ namespace slnEDTBooking.Controllers
 	{
 		public BookLibraryController(EdtBookingContext context) : base(context) { }
 
-		[HttpGet("GetBooksByKeyWords")]
+		[HttpGet("book/search")]
 		[ProducesResponseType(200, Type = typeof(Book))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-		public async Task<IActionResult> GetBooksByKeyWords(string keyword="")
+		public async Task<IActionResult> GetBooksByKeyWords([FromQuery] string? keyword)
 		{
 				try
 				{
@@ -38,7 +38,7 @@ namespace slnEDTBooking.Controllers
 				}
 		}
 
-		[HttpPost("BorrowAvailableBook")]
+		[HttpPost("book")]
 		[ProducesResponseType(200, Type = typeof(BorrowHistory))]
 		[ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
 		[ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))]
@@ -74,13 +74,13 @@ namespace slnEDTBooking.Controllers
 			}
 		}
 
-		[HttpPut("BorrowBookReturn")]
+		[HttpPut("book/{sBookInventoryId}")]
 		[ProducesResponseType(200, Type = typeof(BorrowHistory))]
 		[ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
 		[ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ProblemDetails))]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
 
-		public async Task<IActionResult> BorrowBookReturn([FromForm] string sBookInventoryId)
+		public async Task<IActionResult> BorrowBookReturn(string sBookInventoryId)
 		{
 			try
 			{
@@ -110,7 +110,7 @@ namespace slnEDTBooking.Controllers
 
 		
 
-		[HttpGet("GetAllUsers")]
+		[HttpGet("users")]
 		[ProducesResponseType(200, Type = typeof(User))]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
 		public async Task<IActionResult> GetAllUsers()
@@ -127,7 +127,7 @@ namespace slnEDTBooking.Controllers
 			}
 		}
 
-		[HttpGet("GetAvailableInventoryByISBN")]
+		[HttpGet("book/{isbn}")]
 		[ProducesResponseType(200, Type = typeof(vwAvailableBook))]
 		[ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
@@ -150,7 +150,7 @@ namespace slnEDTBooking.Controllers
 			}
 		}
 
-		[HttpGet("GetAllBorrowedInventory")]
+		[HttpGet("book/all")]
 		[ProducesResponseType(200, Type = typeof(vwAvailableBook))]
 		[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]

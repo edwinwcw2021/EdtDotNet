@@ -18,10 +18,10 @@ namespace DataLayer.BLL
 			DalBooks dal = new DalBooks(this._context);
 			await dal.GetAllBooks();			
 		}
-		public async Task<List<Book>> GetBooksByKeyWords(string keywords)
+		public async Task<List<Book>> GetBooksByKeyWords(string? keywords)
 		{
 			DalBooks dal = new DalBooks(this._context);	
-			return await dal.GetBooksByKeyWords(keywords);
+			return await dal.GetBooksByKeyWords(keywords ?? "");
 		}
 
 	}

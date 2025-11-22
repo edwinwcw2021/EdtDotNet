@@ -10,11 +10,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<EdtBookingContext>(options => options.UseSqlServer((builder.Configuration.GetConnectionString("DefaultConnection"))));
+Common.Instance.Initialize(builder.Configuration);
+var connstr = Common.Instance.RunSync(() => Common.Instance.GetConnectionString()); // New Implement for password vault or traditional v
+builder.Services.AddDbContext<EdtBookingContext>(options => options.UseSqlServer((connstr)));
 
 var app = builder.Build();
 
-Common.Instance.Initialize(builder.Configuration);
+
+
+
 Common.Instance.CreateLogger(builder.Configuration["logPath"]);
 
 // builder.Services.AddControllersWithViews();
@@ -31,14 +35,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-//using (var scope = app.Services.CreateScope())
-//{
-//	var services = scope.ServiceProvider;
-//	var context = services.GetRequiredService<sprswebContext>();
-//	context.Database.EnsureCreated();
-//	cache.initAllData(context);
-//}
 
 using (var scope = app.Services.CreateScope())
 {

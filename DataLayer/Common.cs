@@ -79,7 +79,106 @@ namespace DataLayer
 			return (obj == null) ? string.Empty : obj.ToString();
 		}
 
-		public string ProblemCodeToType(int code)
+    public async Task<string> GetConnectionString()
+		{
+      string vault_address = GetAppSetting("vault:vault_address");
+      if (vault_address != "")
+      {
+        var vault_path = GetAppSetting("vault:vault_path");
+        string vault_token = GetAppSetting("vault:vault_token") ?? "";
+
+        string url = $"{vault_address}/v1/{vault_path}";
+
+        var vaultdata = await Common.Instance.CurlJsonAsync(url, vault_token);
+
+        string connection_string = string.Format(
+          "Server={0};Database={1};Uid={2};Pwd={3};Encrypt=True;TrustServerCertificate=True;",
+          GetVaultData(vaultdata, "server"),
+          GetVaultData(vaultdata, "database"),
+          GetVaultData(vaultdata, "Uid"),
+          GetVaultData(vaultdata, "Pwd")
+        );
+				return connection_string;
+      }
+      else
+      {
+        return GetConnectionString("DefaultConnection");
+      }
+    }
+    public string GetConnectionString(string name)
+    {
+      string? obj = this._configuration.GetConnectionString(name);
+      return (obj == null) ? string.Empty : obj.ToString();
+    }
+    public T RunSync<T>(Func<Task<T>> func)
+    {
+      return Task.Run(func).GetAwaiter().GetResult();
+    }
+
+    public void RunSync(Func<Task> func)
+    {
+      Task.Run(func).GetAwaiter().GetResult();
+    }
+
+		public async Task<string> CurlAsync(
+				string url,
+				Dictionary<string, string>? headers = null)
+		{
+			using var http = new HttpClient();
+			if (headers != null)
+			{
+				foreach (var h in headers)
+				{
+					http.DefaultRequestHeaders.Add(h.Key, h.Value);
+				}
+			}
+			var response = await http.GetAsync(url);
+			response.EnsureSuccessStatusCode();
+			return await response.Content.ReadAsStringAsync();
+    }
+
+		public string GetVaultData(JsonDocument json, string json_name)
+		{
+			if (json.RootElement.TryGetProperty("data", out var data1) &&
+					data1.TryGetProperty("data", out var data2) &&
+					data2.TryGetProperty(json_name, out var retData))
+			{
+				return retData.GetString() ?? "";
+			}
+			return "";
+    }
+
+    public async Task<JsonDocument> CurlJsonAsync(string url, string vault_token)
+    {
+      var headers = new Dictionary<string, string>
+      {
+          { "X-Vault-Token", vault_token }
+      };
+      return await CurlJsonAsync(url, headers);
+    }
+
+    public async Task<JsonDocument> CurlJsonAsync(
+        string url,
+        Dictionary<string, string>? headers = null)
+    {
+      using var http = new HttpClient();
+
+      if (headers != null)
+      {
+        foreach (var h in headers)
+        {
+          http.DefaultRequestHeaders.Add(h.Key, h.Value);
+        }
+      }
+
+      var response = await http.GetAsync(url);
+      response.EnsureSuccessStatusCode();
+
+      using var stream = await response.Content.ReadAsStreamAsync();
+      return await JsonDocument.ParseAsync(stream);
+    }
+
+    public string ProblemCodeToType(int code)
 		{
 			string ret = "";
 			switch (code)
