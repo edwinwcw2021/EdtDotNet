@@ -44,9 +44,9 @@ Borrowed books are displayed on the Borrowed page.
 
 Download and Install Node.js (Latest LTS version is recommended)
 
-`
+```bash
 https://nodejs.org/en/download/current
-`
+```
 
 Verify Node.js and npm Installation (Run node -v and npm -v)
 
@@ -55,14 +55,17 @@ node -v
 npm -v
 ```
 
-Restore MSSQL Database (Using the provided database [file](https://edtlib.vagweb.com/sqlbackup.7z) )
+Install Angular CLI (Latest Stable Version)
+```
+npm install -g @angular/cli@latest
+```
 
-`
+Restore MSSQL Database (Using the provided database [file](https://edtlib.vagweb.com/sqlbackup.7z) )
+```bash
 https://edtlib.vagweb.com/sqlbackup.7z
-`
+```
 
 Execute SQL Script (To create database user and set required permissions)
-
 ```bash
 USE [master]
 GO
@@ -80,23 +83,20 @@ select * from users;
 ```
 
 Git Clone Backend Source (.NET Project)
-
-`
+```bash
 git clone https://github.com/edwinwcw2021/EdtDotNet.git
-`
+```
 
 Git Clone Frontend Source (Angular Project) 
-
-`
+```
 git clone https://github.com/edwinwcw2021/edtangular.git
-`
+```
 
 Install Frontend Dependencies (Navigate to the Angular directory and run npm install)
-
-`
+```
 cd edtangular
 npm -i
-`
+```
 
 Build/Run Backend Project (Open the .NET solution and Angular Project and press F5 to run/debug)
 
